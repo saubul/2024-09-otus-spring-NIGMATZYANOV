@@ -22,7 +22,7 @@ public class AppConfig {
         return RateLimiterConfig.custom()
                 .timeoutDuration(Duration.ofMillis(100))
                 .limitRefreshPeriod(Duration.ofSeconds(10))
-                .limitForPeriod(1)
+                .limitForPeriod(10)
                 .build();
     }
 

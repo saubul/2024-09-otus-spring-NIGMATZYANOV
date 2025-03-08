@@ -1,5 +1,6 @@
 package ru.otus.hw.services;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import ru.otus.hw.models.Comment;
 import ru.otus.hw.repositories.BookRepository;
 import ru.otus.hw.repositories.CommentRepository;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,8 +36,14 @@ public class CommentServiceImpl implements CommentService {
 
     @Transactional(readOnly = true)
     @Override
+    @CircuitBreaker(name = "commentServiceCircuitBreaker", fallbackMethod = "commentServiceFallbackMethod")
     public List<CommentDto> findAllByBookId(Long id) {
+        //throw new RuntimeException("");
         return commentRepository.findAllByBookId(id).stream().map(commentMapper::toDto).collect(Collectors.toList());
+    }
+
+    public List<CommentDto> commentServiceFallbackMethod(Exception e) {
+        return Collections.emptyList();
     }
 
     @Transactional
