@@ -10,3 +10,23 @@ spring:
     hibernate:
       ddl-auto: none
     show-sql: true
+
+resilience4j:
+  ratelimiter:
+    instances:
+      commentRateLimiter:
+        limit-for-period: 10
+        limit-refresh-period: 10s
+        timeout-duration: 100ms
+  circuitbreaker:
+    instances:
+      commentServiceCircuitBreaker:
+        register-health-indicator: true
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 10
+        minimum-number-of-calls: 5
+        permitted-number-of-calls-in-half-open-state: 3
+        wait-duration-in-open-state: 5s
+        failure-rate-threshold: 50
+        record-exceptions:
+          - java.lang.Exception

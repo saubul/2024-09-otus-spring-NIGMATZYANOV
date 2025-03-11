@@ -1,5 +1,6 @@
 package ru.otus.hw.controllers.rest;
 
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +22,7 @@ public class CommentController {
 
     @GetMapping("/api/v1/books/{bookId}/comments")
     @ResponseStatus(value = HttpStatus.OK)
+    @RateLimiter(name = "commentRateLimiter")
     public List<CommentDto> findAllByBookId(@PathVariable("bookId") Long bookId) {
         return commentService.findAllByBookId(bookId);
     }
